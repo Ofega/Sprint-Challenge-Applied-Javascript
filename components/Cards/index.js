@@ -1,19 +1,66 @@
-// STEP 3: Create Article cards.
-// -----------------------
-// Send an HTTP GET request to the following address: https://lambda-times-backend.herokuapp.com/articles
-// Stduy the response data you get back, closely.
-// You will be creating a component for each 'article' in the list.
-// This won't be as easy as just iterating over an array though.
-// Create a function that will programmatically create the following DOM component:
-//
-// <div class="card">
-//   <div class="headline">{Headline of article}</div>
-//   <div class="author">
-//     <div class="img-container">
-//       <img src={url of authors image} />
-//     </div>
-//     <span>By {authors name}</span>
-//   </div>
-// </div>
-//
-// Create a card for each of the articles and add the card to the DOM.
+// VARIABLE ASSIGNMENT OF DOM ELEMENT
+const cardsContainer = document.querySelector('.cards-container');
+
+
+// DATA REQUEST OF ARTICLES FOR ACTIVE TOPIC
+axios.get('https://lambda-times-backend.herokuapp.com/articles')
+    .then(response => {
+        state.articles = response.data.articles;
+        updateCards(state.articles[state.activeTopic]);
+    })
+
+
+/* === FUNCTIONS === */
+// HELPER FUNCTION TO UPDATE CARDS ON CLICK OR INIT
+function updateCards(article) {
+    cardsContainer.textContent = '';
+        
+    if(state.activeTopic === 'All') {
+        state.topics.forEach(topic => {
+            if(topic === 'node.js') {
+                state.articles.node.forEach(article => {
+                    cardsContainer.appendChild(Card(article));
+                }); 
+            } else {
+                state.articles[topic].forEach(article => {
+                    cardsContainer.appendChild(Card(article));
+                }); 
+            }
+        })
+    } else if(state.activeTopic === 'node.js'){
+        state.articles.node.forEach(article => {
+            cardsContainer.appendChild(Card(article));
+        });
+    } else {
+        state.articles[article].forEach(article => {
+            cardsContainer.appendChild(Card(article));
+        });
+    }
+}
+    
+// FUNCTIONAL CARD COMPONENT
+function Card(article) {
+    const card = document.createElement('div');
+    const headline = document.createElement('div');
+    const author = document.createElement('div');
+    const imgContainer = document.createElement('div');
+    const avatar = document.createElement('img');
+    const authorName = document.createElement('span');
+
+    card.classList.add('card');
+    headline.classList.add('headline');
+    author.classList.add('author');
+    imgContainer.classList.add('img-container');
+    avatar.setAttribute('src', article.authorPhoto);
+
+    headline.textContent = article.headline;
+    authorName.textContent = article.authorName;
+
+    card.appendChild(headline);
+    card.appendChild(author);
+    author.appendChild(imgContainer);
+    author.appendChild(authorName);
+    imgContainer.appendChild(avatar);
+
+    return card;
+}

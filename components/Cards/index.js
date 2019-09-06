@@ -1,11 +1,17 @@
+// VARIABLE ASSIGNMENT OF DOM ELEMENT
 const cardsContainer = document.querySelector('.cards-container');
 
+
+// DATA REQUEST OF ARTICLES FOR ACTIVE TOPIC
 axios.get('https://lambda-times-backend.herokuapp.com/articles')
     .then(response => {
         state.articles = response.data.articles;
         updateCards(state.articles[state.activeTopic]);
     })
 
+
+/* === FUNCTIONS === */
+// HELPER FUNCTION TO UPDATE CARDS ON CLICK OR INIT
 function updateCards(article) {
     cardsContainer.textContent = '';
         
@@ -32,6 +38,7 @@ function updateCards(article) {
     }
 }
     
+// FUNCTIONAL CARD COMPONENT
 function Card(article) {
     const card = document.createElement('div');
     const headline = document.createElement('div');
